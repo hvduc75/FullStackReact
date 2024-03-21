@@ -1,7 +1,8 @@
+import { stringify } from "react-auth-wrapper/helpers";
 import axios from "../axios";
 
-const handleLoginApi = (email, paaaword) => {
-    return axios.post('/api/login');
+const handleLoginApi = (email, password) => {
+    return axios.post('/api/login', {email, password});
 }
 
 export default handleLoginApi;
