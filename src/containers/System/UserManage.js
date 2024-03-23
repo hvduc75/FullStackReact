@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import './UserManage.scss';
-import { getAllUsers, createNewUserService } from '../../services/userService';
+import { getAllUsers, createNewUserService, deleteUserService } from '../../services/userService';
 import ModalUser from './ModalUser';
+import { emitter } from '../../utils/emitter';
 class UserManage extends Component {
     constructor(props) {
         super(props);
@@ -48,11 +49,27 @@ class UserManage extends Component {
                 this.setState({
                     isOpenModalUser: false
                 });
+                // phương thức này cho phép truyền thêm biến đi giữa parent và children
+                emitter.emit('EVENT_CLEAR_MODAL_DATA')
             }
         } catch (error) {
             console.log(error);
         }
     };
+
+    handleDeleteUser = async (user) => {
+        try {
+            let response = await deleteUserService(user.id);
+            if(response && response.errCode === 0) {
+                await this.getAllUsersFromReact();
+            }
+            else {
+                alert(response.errMessage)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     /** Life cycle
      * Run component:
@@ -73,7 +90,7 @@ class UserManage extends Component {
                 <div className="title text-center">MANAGE USERS WITH ADMIN</div>
                 <div className="mx-1">
                     <button className="btn btn-primary px-3" onClick={() => this.handleAddNewUser()}>
-                        <i className="fas fa-plus"></i>Add new users
+                        <i className="fas fa-plus"></i> Add new users
                     </button>
                 </div>
                 <div className="users-table mt-3 mx-1">
@@ -98,7 +115,7 @@ class UserManage extends Component {
                                                 <button className="btn-edit">
                                                     <i className="fas fa-pencil-alt"></i>
                                                 </button>
-                                                <button className="btn-delete">
+                                                <button className="btn-delete" onClick={() => this.handleDeleteUser(item)}>
                                                     <i className="fas fa-trash"></i>
                                                 </button>
                                             </td>
