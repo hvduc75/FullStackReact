@@ -1,4 +1,3 @@
-import { stringify } from "react-auth-wrapper/helpers";
 import axios from "../axios";
 
 const handleLoginApi = (email, password) => {
@@ -9,5 +8,9 @@ const getAllUsers = (inputId) => {
     return axios.get(`/api/get-all-users?id=${inputId}`)
 }
 
+const createNewUserService = (data) => {
+    return axios.post('/api/create-new-user', data)
+}
+
 export default handleLoginApi;
-export {getAllUsers}
+export {getAllUsers, createNewUserService}
